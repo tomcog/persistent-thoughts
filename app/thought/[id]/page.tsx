@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 import { useParams, useRouter } from "next/navigation";
 import BeliefChart from "@/components/BeliefChart";
 
