@@ -23,7 +23,7 @@ export default function DashboardPage() {
 
   async function fetchThoughts() {
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase()
       .from("thoughts")
       .select("*")
       .order("created_at", { ascending: false });

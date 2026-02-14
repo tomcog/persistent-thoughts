@@ -16,7 +16,7 @@ export default function NewThoughtPage() {
 
   async function handleCreate() {
 
-    const { data: thought } = await getSupabase
+    const { data: thought } = await getSupabase()
       .from("thoughts")
       .insert({ title, description })
       .select()
@@ -24,7 +24,7 @@ export default function NewThoughtPage() {
 
     if (!thought) return;
 
-    await getSupabase
+    await getSupabase()
       .from("belief_strength_entries")
       .insert({
         thought_id: thought.id,

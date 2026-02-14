@@ -41,7 +41,7 @@ export default function ThoughtDetailPage() {
 
   async function fetchThought() {
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase()
       .from("thoughts")
       .select("*")
       .eq("id", id)
@@ -57,7 +57,7 @@ export default function ThoughtDetailPage() {
 
   async function fetchBeliefEntries() {
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase()
       .from("belief_strength_entries")
       .select("*")
       .eq("thought_id", id)
@@ -78,7 +78,7 @@ export default function ThoughtDetailPage() {
 
   async function updateBelief() {
 
-    const { error } = await supabase
+    const { error } = await supabase()
       .from("belief_strength_entries")
       .insert({
         thought_id: id,
