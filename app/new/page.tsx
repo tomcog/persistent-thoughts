@@ -16,20 +16,20 @@ export default function NewThoughtPage() {
 
   async function handleCreate() {
 
-   await getSupabase()
-  .from("thoughts")
-  .insert({ title, description } as any)
+    const { data: thought } = await getSupabase()
+      .from("thoughts")
+      .insert({ title, description } as any)
       .select()
       .single();
 
     if (!thought) return;
 
-   await getSupabase()
-  .from("belief_strength_entries")
-  .insert({
-    thought_id: thought.id,
-    value: belief,
-  } as any);
+    await getSupabase()
+      .from("belief_strength_entries")
+      .insert({
+        thought_id: thought.id,
+        value: belief,
+      } as any);
 
     router.push("/");
   }
