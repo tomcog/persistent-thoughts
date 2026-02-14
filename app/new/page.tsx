@@ -13,25 +13,50 @@ export default function NewThoughtPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [belief, setBelief] = useState(50);
+  const [loading, setLoading] = useState(false);
 
   async function handleCreate() {
 
-    const { data: thought } = await getSupabase()
-      .from("thoughts")
-      .insert({ title, description } as any)
-      .select()
-      .single();
+    if (!title.trim()) return;
 
-    if (!thought) return;
+    setLoading(true);
 
-    await getSupabase()
-      .from("belief_strength_entries")
-      .insert({
-        thought_id: thought.id,
-        value: belief,
-      } as any);
+    try {
 
-    router.push("/");
+      // Insert thought
+      const { data } = await getSupabase()
+        .from("thoughts")
+        .insert({
+          title,
+          description,
+        } as any)
+        .select()
+        .single();
+
+      // Explicitly type the result to satisfy TypeScript
+      const thought = data as { id: string } | null;
+
+      if (!thought) {
+        setLoading(false);
+        return;
+      }
+
+      // Insert belief strength entry
+      await getSupabase()
+        .from("belief_strength_entries")
+        .insert({
+          thought_id: thought.id,
+          value: belief,
+        } as any);
+
+      router.push("/");
+
+    } catch (err) {
+
+      console.error("Error creating thought:", err);
+      setLoading(false);
+
+    }
   }
 
   return (
@@ -65,13 +90,15 @@ export default function NewThoughtPage() {
         max="100"
         value={belief}
         onChange={(e) => setBelief(Number(e.target.value))}
+        className="w-full"
       />
 
       <button
         onClick={handleCreate}
-        className="bg-black text-white px-4 py-2 rounded"
+        disabled={loading}
+        className="bg-black text-white px-4 py-2 rounded disabled:opacity-50"
       >
-        Create
+        {loading ? "Creating..." : "Create"}
       </button>
 
     </main>
