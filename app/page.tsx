@@ -16,6 +16,7 @@ interface Thought {
 export default function DashboardPage() {
 
   const [thoughts, setThoughts] = useState<Thought[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchThoughts();
@@ -23,17 +24,19 @@ export default function DashboardPage() {
 
   async function fetchThoughts() {
 
-    const { data, error } = await supabase()
+    const { data, error } = await getSupabase()
       .from("thoughts")
       .select("*")
       .order("created_at", { ascending: false });
 
-if (error) {
-  console.error("Supabase error:", error.message, error.details, error.hint);
-  return;
-}
+    if (error) {
+      console.error("Error loading thoughts:", error);
+      setLoading(false);
+      return;
+    }
 
-    setThoughts(data || []);
+    setThoughts((data ?? []) as Thought[]);
+    setLoading(false);
   }
 
   return (
@@ -53,6 +56,12 @@ if (error) {
         </Link>
 
       </div>
+
+      {loading && (
+        <div className="text-gray-500">
+          Loading...
+        </div>
+      )}
 
       <div className="space-y-3">
 
