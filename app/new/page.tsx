@@ -3,7 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
 export default function NewThoughtPage() {
@@ -16,7 +16,7 @@ export default function NewThoughtPage() {
 
   async function handleCreate() {
 
-    const { data: thought } = await supabase
+    const { data: thought } = await getSupabase
       .from("thoughts")
       .insert({ title, description })
       .select()
@@ -24,7 +24,7 @@ export default function NewThoughtPage() {
 
     if (!thought) return;
 
-    await supabase
+    await getSupabase
       .from("belief_strength_entries")
       .insert({
         thought_id: thought.id,
